@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Visitas Passline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0d0d0d;
+      --card:#161616;
+      --border:#2a2a2a;
+      --yellow:#F5A800;
+      --text:#f2f2f2;
+      --muted:#9a9a9a;
+      --danger:#ff6161;
+      --ok:#3ddc84;
+      --radius:14px;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      -webkit-tap-highlight-color:transparent;
+      padding-bottom:calc(96px + env(safe-area-inset-bottom));
+    }
+    header{
+      padding:calc(20px + env(safe-area-inset-top)) 20px 12px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+    }
+    header .logo{height:34px;width:auto;margin-bottom:10px;}
+    header h1{font-size:17px;font-weight:600;margin:0;color:var(--text);}
+    header p{font-size:13px;color:var(--muted);margin:4px 0 0;}
+    main{max-width:520px;margin:0 auto;padding:8px 16px 24px;}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .field{margin-bottom:16px;}
+    .field:last-child{margin-bottom:0;}
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:600;
+      color:var(--yellow);
+      margin-bottom:7px;
+      letter-spacing:.2px;
+    }
+    input[type=text],
+    input[type=datetime-local],
+    select,
+    textarea{
+      width:100%;
+      background:#0d0d0d;
+      border:1.5px solid var(--border);
+      color:var(--text);
+      font-family:inherit;
+      font-size:16px;
+      padding:12px 13px;
+      border-radius:10px;
+      outline:none;
+      transition:border-color .15s;
+      -webkit-appearance:none;
+      appearance:none;
+    }
+    select{
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' stroke='%23F5A800' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat:no-repeat;
+      background-position:right 14px center;
+      padding-right:36px;
+    }
+    textarea{resize:vertical;min-height:78px;line-height:1.4;}
+    input:focus,select:focus,textarea:focus{border-color:var(--yellow);}
+    input.invalid,select.invalid,textarea.invalid{border-color:var(--danger);}
+    .hint{font-size:11.5px;color:var(--muted);margin-top:5px;}
+    .error-msg{font-size:12px;color:var(--danger);margin-top:5px;display:none;}
+    .error-msg.show{display:block;}
+
+    .radio-group{display:flex;gap:10px;}
+    .radio-option{
+      flex:1;
+      border:1.5px solid var(--border);
+      border-radius:10px;
+      padding:12px 10px;
+      text-align:center;
+      font-size:14px;
+      font-weight:600;
+      color:var(--muted);
+      cursor:pointer;
+      user-select:none;
+      transition:all .15s;
+    }
+    .radio-option input{position:absolute;opacity:0;pointer-events:none;}
+    .radio-option.active{
+      border-color:var(--yellow);
+      color:var(--yellow);
+      background:rgba(245,168,0,.08);
+    }
+    .radio-group.invalid .radio-option{border-color:var(--danger);}
+
+    .photo-box{
+      border:1.5px dashed var(--border);
+      border-radius:12px;
+      padding:16px;
+      text-align:center;
+      cursor:pointer;
+      color:var(--muted);
+      font-size:14px;
+      transition:border-color .15s;
+    }
+    .photo-box.has-photo{border-style:solid;border-color:var(--yellow);padding:10px;}
+    .photo-box.invalid{border-color:var(--danger);}
+    .photo-box svg{display:block;margin:0 auto 8px;}
+    .photo-preview{width:100%;border-radius:8px;display:block;max-height:280px;object-fit:cover;}
+    .photo-meta{font-size:11.5px;color:var(--muted);margin-top:8px;}
+    .photo-retake{font-size:12.5px;color:var(--yellow);font-weight:600;margin-top:8px;}
+    input[type=file]{display:none;}
+
+    footer{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      background:linear-gradient(180deg, rgba(13,13,13,0) 0%, var(--bg) 30%);
+      padding:18px 16px calc(16px + env(safe-area-inset-bottom));
+    }
+    .submit-btn{
+      max-width:520px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      width:100%;
+      background:var(--yellow);
+      color:#0d0d0d;
+      border:none;
+      font-family:inherit;
+      font-size:16px;
+      font-weight:700;
+      padding:15px 20px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow:0 6px 20px rgba(245,168,0,.25);
+    }
+    .submit-btn:disabled{opacity:.6;cursor:default;}
+    .spinner{
+      width:16px;height:16px;
+      border:2.5px solid rgba(13,13,13,.3);
+      border-top-color:#0d0d0d;
+      border-radius:50%;
+      animation:spin .7s linear infinite;
+      display:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .submitting .spinner{display:inline-block;}
+    .submitting .btn-label{opacity:.85;}
+
+    .form-error{
+      background:rgba(255,97,97,.1);
+      border:1px solid rgba(255,97,97,.4);
+      color:var(--danger);
+      font-size:13px;
+      padding:11px 13px;
+      border-radius:10px;
+      margin-bottom:14px;
+      display:none;
+    }
+    .form-error.show{display:block;}
+
+    .success-screen{
+      position:fixed;inset:0;
+      background:var(--bg);
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:32px;
+      z-index:50;
+    }
+    .success-screen.show{display:flex;}
+    .success-screen .check{
+      width:72px;height:72px;
+      border-radius:50%;
+      background:rgba(61,220,132,.12);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:18px;
+    }
+    .success-screen h2{font-size:19px;margin:0 0 8px;}
+    .success-screen p{color:var(--muted);font-size:14px;margin:0 0 26px;max-width:280px;}
+    .success-screen button{
+      background:var(--yellow);
+      color:#0d0d0d;
+      border:none;
+      font-family:inherit;
+      font-weight:700;
+      font-size:15px;
+      padding:13px 26px;
+      border-radius:12px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <svg class="logo" viewBox="0 0 232 48" xmlns="http://www.w3.org/2000/svg" aria-label="Passline">
+      <g transform="translate(2,4) rotate(-45 24 20)">
+        <rect x="4" y="4" width="40" height="32" rx="9" fill="none" stroke="#F5A800" stroke-width="3.6"/>
+        <circle cx="34.5" cy="12" r="1.8" fill="#F5A800"/>
+        <circle cx="34.5" cy="20" r="1.8" fill="#F5A800"/>
+        <circle cx="34.5" cy="28" r="1.8" fill="#F5A800"/>
+        <path d="M13 27 L27 13 M20 13 H27 V20" fill="none" stroke="#F5A800" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="58" y="32" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="26" fill="#f2f2f2">Pass</text>
+      <text x="114" y="32" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="26" fill="#F5A800">line</text>
+    </svg>
+    <h1>Registro de Visita Comercial</h1>
+    <p>Cargá la visita en menos de un minuto</p>
+  </header>
+
+  <main>
+    <form id="visitaForm" novalidate>
+      <div class="form-error" id="formError"></div>
+
+      <div class="card">
+        <div class="field">
+          <label for="comercial">Comercial</label>
+          <select id="comercial" name="comercial" required>
+            <option value="" disabled selected>Seleccioná tu nombre</option>
+            <? for (var i = 0; i < comerciales.length; i++) { ?>
+              <option value="<?= comerciales[i] ?>"><?= comerciales[i] ?></option>
+            <? } ?>
+          </select>
+          <div class="error-msg">Elegí un comercial.</div>
+        </div>
+
+        <div class="field">
+          <label for="fechaHora">Fecha y hora</label>
+          <input type="datetime-local" id="fechaHora" name="fechaHora" required>
+          <div class="error-msg">Ingresá la fecha y hora.</div>
+        </div>
+
+        <div class="field">
+          <label for="cliente">Cliente visitado</label>
+          <input type="text" id="cliente" name="cliente" placeholder="Nombre del cliente / empresa" autocomplete="off" required>
+          <div class="error-msg">Ingresá el cliente visitado.</div>
+        </div>
+
+        <div class="field">
+          <label for="contacto">Contacto (nombre y cargo)</label>
+          <input type="text" id="contacto" name="contacto" placeholder="Ej: Juan Pérez, Gerente de Marketing" autocomplete="off" required>
+          <div class="error-msg">Ingresá el contacto.</div>
+        </div>
+
+        <div class="field">
+          <label>Estado de la cuenta</label>
+          <div class="radio-group" id="estadoGroup">
+            <? for (var e = 0; e < estados.length; e++) { ?>
+              <label class="radio-option">
+                <input type="radio" name="estado" value="<?= estados[e] ?>">
+                <?= estados[e] ?>
+              </label>
+            <? } ?>
+          </div>
+          <div class="error-msg">Elegí el estado de la cuenta.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label for="temas">Temas charlados</label>
+          <textarea id="temas" name="temas" placeholder="¿De qué se habló en la visita?" required></textarea>
+          <div class="error-msg">Contá qué se charló.</div>
+        </div>
+
+        <div class="field">
+          <label for="proximosPasos">Próximos pasos</label>
+          <textarea id="proximosPasos" name="proximosPasos" placeholder="¿Qué sigue después de esta visita?" required></textarea>
+          <div class="error-msg">Indicá los próximos pasos.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="field" style="margin-bottom:0;">
+          <label>Foto</label>
+          <div class="photo-box" id="photoBox">
+            <div id="photoContent">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                <path d="M4 8.5C4 7.67 4.67 7 5.5 7H7.8L8.6 5.3C8.9 4.5 9.7 4 10.5 4H13.5C14.3 4 15.1 4.5 15.4 5.3L16.2 7H18.5C19.33 7 20 7.67 20 8.5V17.5C20 18.33 19.33 19 18.5 19H5.5C4.67 19 4 18.33 4 17.5V8.5Z" stroke="#9a9a9a" stroke-width="1.6"/>
+                <circle cx="12" cy="13" r="3.4" stroke="#9a9a9a" stroke-width="1.6"/>
+              </svg>
+              <div id="photoText">Tocá para sacar o elegir una foto</div>
+            </div>
+            <input type="file" id="photoInput" accept="image/*" capture="environment">
+          </div>
+          <div class="error-msg">La foto es obligatoria.</div>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <footer>
+    <button type="submit" form="visitaForm" class="submit-btn" id="submitBtnReal">
+      <span class="spinner"></span>
+      <span class="btn-label">Registrar visita</span>
+    </button>
+  </footer>
+
+  <div class="success-screen" id="successScreen">
+    <div class="check">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#3ddc84" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2>Visita registrada</h2>
+    <p>Los datos se guardaron correctamente en Google Sheets.</p>
+    <button id="newVisitBtn">Cargar otra visita</button>
+  </div>
+
+  <script>
+    var form = document.getElementById('visitaForm');
+    var submitBtn = document.getElementById('submitBtnReal');
+    var formError = document.getElementById('formError');
+    var photoBox = document.getElementById('photoBox');
+    var photoInput = document.getElementById('photoInput');
+    var successScreen = document.getElementById('successScreen');
+
+    var compressedPhoto = null; // { base64, mimeType }
+    var photoContent = document.getElementById('photoContent');
+
+    var PHOTO_PLACEHOLDER_HTML =
+      '<svg width="26" height="26" viewBox="0 0 24 24" fill="none">' +
+      '<path d="M4 8.5C4 7.67 4.67 7 5.5 7H7.8L8.6 5.3C8.9 4.5 9.7 4 10.5 4H13.5C14.3 4 15.1 4.5 15.4 5.3L16.2 7H18.5C19.33 7 20 7.67 20 8.5V17.5C20 18.33 19.33 19 18.5 19H5.5C4.67 19 4 18.33 4 17.5V8.5Z" stroke="#9a9a9a" stroke-width="1.6"/>' +
+      '<circle cx="12" cy="13" r="3.4" stroke="#9a9a9a" stroke-width="1.6"/></svg>' +
+      '<div id="photoText">Tocá para sacar o elegir una foto</div>';
+
+    function handlePhotoChange() {
+      var file = photoInput.files[0];
+      if (!file) return;
+      var textEl = document.getElementById('photoText');
+      if (textEl) textEl.textContent = 'Comprimiendo foto…';
+      compressImage(file).then(function (result) {
+        compressedPhoto = result;
+        renderPhotoPreview(result.dataUrl, file.size, result.finalBytes);
+        clearFieldError(photoBox);
+      }).catch(function () {
+        var t = document.getElementById('photoText');
+        if (t) t.textContent = 'No se pudo procesar la imagen. Probá de nuevo.';
+      });
+    }
+
+    function resetPhotoBox() {
+      photoBox.classList.remove('has-photo', 'invalid');
+      photoContent.innerHTML = PHOTO_PLACEHOLDER_HTML;
+      photoInput.value = '';
+    }
+
+    function setDefaultDateTime() {
+      var now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('fechaHora').value = now.toISOString().slice(0, 16);
+    }
+    setDefaultDateTime();
+
+    // Estado radio styling
+    document.querySelectorAll('.radio-option').forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        document.querySelectorAll('.radio-option').forEach(function (o) { o.classList.remove('active'); });
+        opt.classList.add('active');
+        opt.querySelector('input').checked = true;
+        clearFieldError(document.getElementById('estadoGroup'));
+      });
+    });
+
+    photoBox.addEventListener('click', function () { photoInput.click(); });
+    photoInput.addEventListener('change', handlePhotoChange);
+
+    function renderPhotoPreview(dataUrl, originalBytes, finalBytes) {
+      photoBox.classList.add('has-photo');
+      photoContent.innerHTML =
+        '<img class="photo-preview" src="' + dataUrl + '">' +
+        '<div class="photo-meta">' + formatKb(originalBytes) + ' → ' + formatKb(finalBytes) + '</div>' +
+        '<div class="photo-retake">Tocá para cambiar la foto</div>';
+    }
+
+    function formatKb(bytes) {
+      return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+    }
+
+    function compressImage(file) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var img = new Image();
+          img.onload = function () {
+            var maxDim = 1400;
+            var width = img.width, height = img.height;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+              else { width = Math.round(width * maxDim / height); height = maxDim; }
+            }
+            var canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            var quality = 0.75;
+            var dataUrl = canvas.toDataURL('image/jpeg', quality);
+            while (dataUrl.length > 900000 && quality > 0.35) {
+              quality -= 0.1;
+              dataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+            var base64 = dataUrl.split(',')[1];
+            resolve({
+              dataUrl: dataUrl,
+              base64: base64,
+              mimeType: 'image/jpeg',
+              finalBytes: Math.round(base64.length * 0.75)
+            });
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function clearFieldError(el) {
+      el.classList.remove('invalid');
+      var msg = el.closest('.field').querySelector('.error-msg');
+      if (msg) msg.classList.remove('show');
+    }
+
+    ['comercial', 'fechaHora', 'cliente', 'contacto', 'temas', 'proximosPasos'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', function () { clearFieldError(this); });
+      document.getElementById(id).addEventListener('change', function () { clearFieldError(this); });
+    });
+
+    function markInvalid(el) {
+      el.classList.add('invalid');
+      var field = el.closest ? el.closest('.field') : el.parentElement.closest('.field');
+      var msg = field ? field.querySelector('.error-msg') : null;
+      if (msg) msg.classList.add('show');
+    }
+
+    function validate() {
+      var valid = true;
+      var textFields = ['comercial', 'fechaHora', 'cliente', 'contacto', 'temas', 'proximosPasos'];
+      textFields.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el.value || !el.value.trim()) { markInvalid(el); valid = false; }
+      });
+      var estado = form.querySelector('input[name=estado]:checked');
+      if (!estado) { markInvalid(document.getElementById('estadoGroup')); valid = false; }
+      if (!compressedPhoto) { markInvalid(photoBox); valid = false; }
+      return valid;
+    }
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      formError.classList.remove('show');
+      if (!validate()) {
+        formError.textContent = 'Revisá los campos marcados en rojo.';
+        formError.classList.add('show');
+        return;
+      }
+
+      var estado = form.querySelector('input[name=estado]:checked');
+      var payload = {
+        comercial: document.getElementById('comercial').value,
+        fechaHora: new Date(document.getElementById('fechaHora').value).toISOString(),
+        cliente: document.getElementById('cliente').value.trim(),
+        contacto: document.getElementById('contacto').value.trim(),
+        estado: estado.value,
+        temas: document.getElementById('temas').value.trim(),
+        proximosPasos: document.getElementById('proximosPasos').value.trim(),
+        photoBase64: compressedPhoto.base64,
+        photoMimeType: compressedPhoto.mimeType
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('submitting');
+
+      google.script.run
+        .withSuccessHandler(function () {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('submitting');
+          successScreen.classList.add('show');
+        })
+        .withFailureHandler(function (err) {
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('submitting');
+          formError.textContent = (err && err.message) ? err.message : 'No se pudo registrar la visita. Probá de nuevo.';
+          formError.classList.add('show');
+        })
+        .submitVisita(payload);
+    });
+
+    document.getElementById('newVisitBtn').addEventListener('click', function () {
+      form.reset();
+      compressedPhoto = null;
+      resetPhotoBox();
+      document.querySelectorAll('.radio-option').forEach(function (o) { o.classList.remove('active'); });
+      document.querySelectorAll('.invalid').forEach(function (el) { el.classList.remove('invalid'); });
+      document.querySelectorAll('.error-msg.show').forEach(function (el) { el.classList.remove('show'); });
+      formError.classList.remove('show');
+      setDefaultDateTime();
+      successScreen.classList.remove('show');
+      window.scrollTo(0, 0);
+    });
+  </script>
+</body>
+</html>
